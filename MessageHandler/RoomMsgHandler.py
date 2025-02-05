@@ -2,13 +2,15 @@ import os
 import re
 import Config.ConfigServer as Cs
 from threading import Thread
-from MessageHandler.MsgJudge import judgeAtMe,judgeOneEqualListWord,getAtData
-
+from MessageHandler.MsgJudge import judgeAtMe,judgeOneEqualListWord
+from MessageHandler.MsgIntf import getAtData
 
 class RoomMsgHandle:
     def __init__(self, wcf):
+        self.wcf = wcf
         configData = Cs.returnConfigData()        
-        self.joinRoomMsg = configData['customMsg']['joinRoomMsg']        
+        self.joinRoomMsg = configData['customMsg']['joinRoomMsg']     
+        self.aiPicKeyWords = configData['functionKeyWord']['aiPic']
         pass
     
     def JoinRoomWelcome(self, msg):
@@ -60,6 +62,7 @@ class RoomMsgHandle:
                          
         if self.judgeAtMe(self.wcf.self_wxid, content, atUserLists) and not judgeOneEqualListWord(noAtMsg, self.aiPicKeyWords):
             return 
+        
     def mainHandle(self, msg):
         roomId = msg.roomid
         sender = msg.sender

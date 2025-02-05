@@ -1,5 +1,5 @@
 from wcferry import Wcf
-from wxlog.log_module import log_info
+from wxlog.log_module import log_info,log_init
 from threading import Thread
 from queue import Empty
 from MessageHandler.RoomMsgHandler import RoomMsgHandle
@@ -40,7 +40,11 @@ class WxMain(Wcf):
                 continue
 
 
-
+from AiApi.AiModule import AiModule
 if __name__ == '__main__':
-    Ms = WxMain()
-    Ms.processMsg()
+    # Ms = WxMain()
+    # Ms.processMsg()
+    log_init("log.txt")
+    Ai = AiModule()
+    Ai.getAi('AML M5 TET2突变，请给我一些建议','deepseek')
+    
