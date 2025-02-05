@@ -62,7 +62,7 @@ class RoomMsgHandle:
         #senderName = self.wcf.get_alias_in_chatroom(sender, roomId)
         atUserLists, noAtMsg = getAtData(self.wcf, message)
                          
-        if self.judgeAtMe(self.wcf.self_wxid, content, atUserLists) and not judgeOneEqualListWord(noAtMsg, self.aiPicKeyWords):
+        if judgeAtMe(self.wcf.self_wxid, content, atUserLists) and not judgeOneEqualListWord(noAtMsg, self.aiPicKeyWords):
             airesp = self.AiApi.getAi(f"[{sender}问题AI小戴]:f{content}")
             self.wcf.send_text(msg=f"@{sender}:{airesp}", receiver=roomId)
             return 
