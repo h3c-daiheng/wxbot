@@ -51,19 +51,22 @@ class AiModule():
         self.configData = ConfigServer.returnConfigData()
         #self.systemmsg = self.configData['aiConfig']['systemAiRule']
         self.aiList = self.configData['AiInterface']['AiList']      
-
-        print(self.aiList,AiSystemMsg)
+        self.msglength = self.configData['aiConfig']['msglength']
+        print(self.msglength)
         self.msg = [{
             "role": "system",
             "content": AiSystemMsg
         }]
         
             
-    def get_deep_seek_api_retry(self, ainame, messages, tools=None, RetryCnt=10):  
+    def get_deep_seek_api_retry(self, ainame, messages, useDeepMode,tools=None, RetryCnt=2):  
         print(messages)
         baseurl = self.configData['AiInterface'][ainame]['url']  
         apikey = self.configData['AiInterface'][ainame]['key']  
-        module = self.configData['AiInterface'][ainame]['modulename']  
+        module = self.configData['AiInterface'][ainame]['modulename']          
+        if useDeepMode and self.configData['AiInterface'][ainame]['deepmodule']:
+            module = self.configData['AiInterface'][ainame]['deepmodule']
+
         print(baseurl,apikey,module)
         max_tokens = 1024
         # if self.configData['AiInterface'][module].get('MaxToken'):
@@ -93,21 +96,21 @@ class AiModule():
                 time.sleep(3)
         return None
 
-    def getAi(self,content):       
+    def getAi(self,content,useDeepMode):       
         self.msg.append({
             "role": "user",
             "content": content
         })
         for ainame in self.aiList:
             try:                
-                resp = self.get_deep_seek_api_retry(ainame, self.msg)       
+                resp = self.get_deep_seek_api_retry(ainame, self.msg , useDeepMode)       
                 assistant_content = resp.choices[0].message.content
                 self.msg.append({"role": "assistant", "content": f"{assistant_content}"})
-                if len(self.msg) == 21:
+                if len(self.msg) == self.msglength:
                     del self.msg[1] # 删除第一个用户输入
                     del self.msg[2] # 删除第一个系统输出                
                 print(assistant_content)                
-                return assistant_content, self.msg
+                return assistant_content
             except Exception as e:
                 print(f'[-]: Error in getAi method: {e}')
                 log_info(f'[-]: Error in getAi method: {e}')

@@ -63,8 +63,18 @@ class RoomMsgHandle:
         atUserLists, noAtMsg = getAtData(self.wcf, message)
                          
         if judgeAtMe(self.wcf.self_wxid, content, atUserLists) and not judgeOneEqualListWord(noAtMsg, self.aiPicKeyWords):
-            airesp = self.AiApi.getAi(f"[{sender}问题AI小戴]:f{content}")
-            self.wcf.send_text(msg=f"@{sender}:{airesp}", receiver=roomId)
+            
+            useDeepMode=True if "深" in content else False
+            if useDeepMode:
+                self.wcf.send_text(msg=f"@{sender}:使用深度分析模型，请稍后", receiver=roomId)
+            try:
+                airesp = self.AiApi.getAi(f"[{sender}问题AI小戴]:f{content}",useDeepMode)
+                if airesp:
+                    self.wcf.send_text(msg=f"@{sender}:{airesp}", receiver=roomId)
+                    return
+            except Exception as e:
+                print(e)
+            self.wcf.send_text(msg=f"@{sender}:小戴睡着了，再问我一次，或者找小贝壳", receiver=roomId)
             return 
         
     def mainHandle(self, msg):
