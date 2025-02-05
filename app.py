@@ -42,9 +42,10 @@ class WxMain(Wcf):
 
 from AiApi.AiModule import AiModule
 if __name__ == '__main__':
-    # Ms = WxMain()
-    # Ms.processMsg()
-    log_init("log.txt")
-    Ai = AiModule()
-    Ai.getAi('AML M5 TET2突变，请给我一些建议','deepseek')
+    log_init("log.txt")    
+    Ms = WxMain()
+    Ms.processMsg()
+
+    #Ai = AiModule()
+    #Ai.getAi('AML M5 TET2突变，请给我一些建议')
     

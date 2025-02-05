@@ -1,1 +1,3 @@
 wcferry==39.3.3
+PyYaml
+openai

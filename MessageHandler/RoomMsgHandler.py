@@ -4,6 +4,7 @@ import Config.ConfigServer as Cs
 from threading import Thread
 from MessageHandler.MsgJudge import judgeAtMe,judgeOneEqualListWord
 from MessageHandler.MsgIntf import getAtData
+from AiApi.AiModule import AiModule
 
 class RoomMsgHandle:
     def __init__(self, wcf):
@@ -11,6 +12,7 @@ class RoomMsgHandle:
         configData = Cs.returnConfigData()        
         self.joinRoomMsg = configData['customMsg']['joinRoomMsg']     
         self.aiPicKeyWords = configData['functionKeyWord']['aiPic']
+        self.AiApi = AiModule()
         pass
     
     def JoinRoomWelcome(self, msg):
@@ -57,10 +59,12 @@ class RoomMsgHandle:
         sender = message.sender
         roomId = message.roomid
         msgType = message.type
-        senderName = self.wcf.get_alias_in_chatroom(sender, roomId)
+        #senderName = self.wcf.get_alias_in_chatroom(sender, roomId)
         atUserLists, noAtMsg = getAtData(self.wcf, message)
                          
         if self.judgeAtMe(self.wcf.self_wxid, content, atUserLists) and not judgeOneEqualListWord(noAtMsg, self.aiPicKeyWords):
+            airesp = self.AiApi.getAi(f"[{sender}问题AI小戴]:f{content}")
+            self.wcf.send_text(msg=f"@{sender}:{airesp}", receiver=roomId)
             return 
         
     def mainHandle(self, msg):
