@@ -63,3 +63,5 @@ functionKeyWord:
   aiPic:
     - '画'
     - '画一个'
+  aiSetRole: "角色设定"
+      

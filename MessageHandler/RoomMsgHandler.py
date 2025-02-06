@@ -86,18 +86,6 @@ class RoomMsgHandle:
         except Exception as e:
             pass
     
-    def judgeAtMe(selfId, content, atUserList):
-        """
-        判断有人@我, @所有人不算
-        :param selfId:
-        :param atUserList:
-        :return:
-        """
-        if selfId in atUserList and '所有人' not in content:
-            return True
-        return False
-
-
     def TestRoomMsg(self, roomid ):
         if roomid not in self.msg:
             self.msg[roomid] = [{"role": "system","content": AiSystemMsg}]

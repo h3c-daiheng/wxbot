@@ -3,6 +3,7 @@ from wxlog.log_module import log_info,log_init
 from threading import Thread
 from queue import Empty
 from MessageHandler.RoomMsgHandler import RoomMsgHandle
+from MessageHandler.FriendMsg import FriendMsgHandle
 
 
 class WxMain(Wcf):
@@ -10,6 +11,7 @@ class WxMain(Wcf):
         self.wcf = Wcf()
         self.wcf.enable_receiving_msg()
         self.Rmh = RoomMsgHandle(self.wcf)        
+        self.Fmh = FriendMsgHandle(self.wcf)        
         
     def isLogin(self, ):
         ret = self.wcf.is_login()
@@ -31,11 +33,11 @@ class WxMain(Wcf):
                 # # 群聊消息处理
                 if '@chatroom' in msg.roomid:
                     Thread(target=self.Rmh.mainHandle, args=(msg,)).start()
-                # # 好友消息处理
-                # elif '@chatroom' not in msg.roomid and 'gh_' not in msg.sender:
-                #     Thread(target=self.Fmh.mainHandle, args=(msg,)).start()
-                # else:
-                #     pass
+                # 好友消息处理
+                elif '@chatroom' not in msg.roomid and 'gh_' not in msg.sender:
+                    Thread(target=self.Fmh.mainHandle, args=(msg,)).start()
+                else:
+                    pass
             except Empty:
                 continue
 
